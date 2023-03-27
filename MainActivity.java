@@ -1,4 +1,4 @@
-package com.example.miniproject;
+package com.example.finalproject;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -24,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView imageView;
     TextView textView;
-    Button button;
+    Button loadbutton;
+    Button classifybutton;
 
     String [] items = {"T-shirt/top", "Trouser","Pullover", "Dress",
             "Coat", "Sandal", "Shirt", "Sneaker", "Bag", "Ankle boot"};
@@ -37,14 +38,19 @@ public class MainActivity extends AppCompatActivity {
 
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
-        button = findViewById(R.id.button);
+        loadbutton = findViewById(R.id.loadbutton);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        loadbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 imageChooser();
             }
         });
+
+        classifybutton.setOnClickListener(new View.OnClickListener()) {
+            @Override
+            public void onClick(View view) { classifybutton(); }
+        }
     }
 
     private void imageChooser()
@@ -77,10 +83,10 @@ public class MainActivity extends AppCompatActivity {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        int randomIndex = new Random().nextInt(items.length);
-                        String random = items[randomIndex];
-                        textView.setText(random);
                     }
                 }
             });
+    private void classifyimage() {
+
+    }
 }

@@ -32,17 +32,17 @@ test_loader = torch.utils.data.DataLoader(test_set, batch_size=batchSize)
 #need to load the saved model here 
 #***************************************
 
-
+labels_list = []
+predictions_list = []
+loss_list = []
+iteration_list = []
+accuracy = 0
 
     
-def model_test(num_epochs, loss, model):
-    labels_list = []
-    predictions_list = []
-    loss_list = []
-    iteration_list = []
-    accuracy = 0
+def model_test(num_iterations, loss, model):
+
     
-    if not (num_epochs % 50): #the same as "if num_wpochs % 50 == 0"
+    if not (num_iterations % 600): #the same as "if num_wpochs % 50 == 0"
 
         total = 0
         correct = 0
@@ -63,11 +63,23 @@ def model_test(num_epochs, loss, model):
         
         accuracy = correct * 100 / total
         loss_list.append(loss.data)
-        iteration_list.append(num_epochs)
+        iteration_list.append(num_iterations/600)
         #accuracy_list.append(accuracy)
-    
-    if not (num_epochs % 500):
-        print("Iteration: {}, Loss: {}, Accuracy: {}%" .format(num_epochs, loss.data, accuracy))
-
-
         
+        print("Epoch: {}, Loss: {}, Accuracy: {}%" .format(num_iterations/600, loss.data, accuracy))
+    
+    #if not (num_iterations % 600):
+        #print("Iteration: {}, Loss: {}, Accuracy: {}%" .format(num_iterations, loss.data, accuracy))
+
+
+def return_labelsList():
+    return labels_list
+
+def return_lossList():
+    return loss_list
+
+def return_iterationList():
+    return iteration_list
+
+def return_predictionsList():
+    return predictions_list

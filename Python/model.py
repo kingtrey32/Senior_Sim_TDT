@@ -52,7 +52,7 @@ class Fashion_Class_Model(nn.Module):
 #*************************************************************************************
 
 
-
+"""
 #provides a label, or Class, to the object in question
 #not used here
 def output_label(label) :
@@ -70,3 +70,4 @@ def output_label(label) :
     
     input = (label.item() if type(label) == torch.Tensor else label)
     return output_mapping[input]
+"""

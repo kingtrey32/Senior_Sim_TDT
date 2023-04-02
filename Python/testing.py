@@ -7,16 +7,16 @@ Created on Thu Mar 30 09:53:22 2023
 
 
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
+#import torch.nn as nn
+#import torch.nn.functional as F
 from torch.autograd import Variable
 
 import torchvision
 import torchvision.transforms as transforms
 #from torch.utils.data import Dataset, DataLoader
 
-from itertools import chain
-
+#from itertools import chain
+from model import Fashion_Class_Model
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -38,14 +38,18 @@ loss_list = []
 iteration_list = []
 accuracy = 0
 
+model = Fashion_Class_Model()
+model.to(device)
     
-def model_test(num_iterations, loss, model):
-
+def model_test(num_iterations, loss):
     
     if not (num_iterations % 600): #the same as "if num_wpochs % 50 == 0"
-
+        model.load_state_dict(torch.load('C:/Users/Ender/.spyder-py3/fashion_mnist_cnn.ckpt'))
+        
         total = 0
         correct = 0
+        
+        
         
         for images, labels in test_loader:
             images, labels = images.to(device), labels.to(device)
@@ -65,6 +69,10 @@ def model_test(num_iterations, loss, model):
         loss_list.append(loss.data)
         iteration_list.append(num_iterations/600)
         #accuracy_list.append(accuracy)
+        
+        #save the model here
+        #torch.save(model.state_dict(), 'fashion_mnist_cnn.ckpt')
+        
         
         print("Epoch: {}, Loss: {}, Accuracy: {}%" .format(num_iterations/600, loss.data, accuracy))
     

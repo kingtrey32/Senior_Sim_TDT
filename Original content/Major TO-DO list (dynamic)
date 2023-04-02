@@ -1,0 +1,15 @@
+Major TO-DO list
+
+Last date edited: 3/8
+Editing Team Member: David J.
+
+
+Need to add a 'Code' folder to the main branch for our Android App code and for our *.py files...this is coming from the instructions for the project
+
+Have to have separate *.py files for training, testing and models (need more clarification from professor on this before we do it)
+
+Need README with instructions for running the model_creator
+
+Clean the codebase for all files / Refactor as needed
+
+need code for saving and loading CNN models...(this is literally a total of like 4-6 lines of code for both...have to ask what she measn by this)

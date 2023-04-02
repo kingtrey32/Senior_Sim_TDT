@@ -17,7 +17,11 @@ import torchvision.transforms as transforms
 
 from itertools import chain
 
+# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# tensor_cuda = torch.randn((3, 3), device=device)
 
+# # Convert the tensor to numpy array
+# numpy_array = tensor_cuda.cpu().numpy()
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 

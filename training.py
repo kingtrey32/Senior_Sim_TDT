@@ -6,9 +6,10 @@ Created on Thu Mar 30 09:52:25 2023
 """
 
 
-#import numpy as np
+import numpy as np
 #import pandas as pd
 import matplotlib.pyplot as plt
+
 
 import torch
 import torch.nn as nn
@@ -38,7 +39,12 @@ from testing import return_lossList
 from testing import return_iterationList
 
 
+# # Define a tensor on CUDA device
+# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# tensor_cuda = torch.randn((3, 3), device=device)
 
+# # Convert the tensor to numpy array
+# numpy_array = tensor_cuda.cpu().numpy()
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -89,7 +95,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=momen
 
 #***********************Training a network and Testing it***************************
 
-num_epochs_to_train = 3 #each epoch adds about 600 iterations it seems
+num_epochs_to_train = 10 #each epoch adds about 600 iterations it seems
 num_iterations = 0 #counter for metrics at the end of training
 
 #lists for visualization of loss and accuracy
@@ -223,5 +229,4 @@ confusion_matrix(labels_l, predictions_l)
 print("\nClassification report for CNN:\n%s\n"
       % (metrics.classification_report(labels_l, predictions_l)))
 print("Number of training iterations: {}\n" .format(num_iterations))
-
 

@@ -1,37 +1,23 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Mar 30 09:53:22 2023
-
-@author: Ender
-"""
+#Authors: D. Joyner, T. Rana, T. Daniels
 
 
 import torch
-#import torch.nn as nn
-#import torch.nn.functional as F
 from torch.autograd import Variable
 
 import torchvision
 import torchvision.transforms as transforms
-#from torch.utils.data import Dataset, DataLoader
 
-#from itertools import chain
 from model import Fashion_Class_Model
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-
 test_set = torchvision.datasets.FashionMNIST("./data", download=True, train=False, transform=transforms.Compose([transforms.ToTensor()]))
-
 batchSize = 100
-
 test_loader = torch.utils.data.DataLoader(test_set, batch_size=batchSize)
 
-#***************************************
-#need to load the saved model here 
-#***************************************
 
+#*************************variables for metrics production******************
 labels_list = []
 predictions_list = []
 loss_list = []
@@ -41,15 +27,15 @@ accuracy = 0
 model = Fashion_Class_Model()
 model.to(device)
     
+#************************Testing function**************************
 def model_test(num_iterations, loss):
     
-    if not (num_iterations % 600): #the same as "if num_wpochs % 50 == 0"
+    if not (num_iterations % 600): #the same as "if num_epochs % 600 == 0"
+        #overwrites the model object with the most recent weights from our "checkpoint" file
         model.load_state_dict(torch.load('C:/Users/Ender/.spyder-py3/fashion_mnist_cnn.ckpt'))
         
         total = 0
         correct = 0
-        
-        
         
         for images, labels in test_loader:
             images, labels = images.to(device), labels.to(device)
@@ -68,18 +54,11 @@ def model_test(num_iterations, loss):
         accuracy = correct * 100 / total
         loss_list.append(loss.data)
         iteration_list.append(num_iterations/600)
-        #accuracy_list.append(accuracy)
-        
-        #save the model here
-        #torch.save(model.state_dict(), 'fashion_mnist_cnn.ckpt')
-        
         
         print("Epoch: {}, Loss: {}, Accuracy: {}%" .format(num_iterations/600, loss.data, accuracy))
     
-    #if not (num_iterations % 600):
-        #print("Iteration: {}, Loss: {}, Accuracy: {}%" .format(num_iterations, loss.data, accuracy))
 
-
+#*********************getters for training.py**************************
 def return_labelsList():
     return labels_list
 

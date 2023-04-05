@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar 28 15:11:45 2023
+#model provided by professor A. Choudhury
+#modified by D. Joyner, T. Rana, T. Daniels
 
-@author: Ender
-"""
 
 import torch
 import torch.nn as nn
@@ -11,8 +8,6 @@ import torch.nn.functional as F
 
 
 #*************************************************The CNN model***********************
-#We will need to change a few things about it to fit her criteria like leakyReLu etc.
-
 class Fashion_Class_Model(nn.Module):
     def __init__(self):
         super().__init__()
@@ -26,48 +21,13 @@ class Fashion_Class_Model(nn.Module):
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.1)
 
     def forward(self, x):   
-        x = self.conv1(x)
-        x = F.leaky_relu(x)
-        x = self.pool(x)
-        #x = self.pool(F.relu(self.conv1(x)))
-        
-        x = self.conv2(x)
-        x = F.leaky_relu(x)
-        x = self.pool(x)
-        #x = self.pool(F.relu(self.conv2(x)))
-        
-        x = torch.flatten(x, 1) # flatten all dimensions except batch
-        
-        x = self.fc1(x)
-        x = F.leaky_relu(x)
-        #x = F.relu(self.fc1(x))
+        x = self.pool(F.leaky_relu(self.conv1(x)))
+        x = self.pool(F.leaky_relu(self.conv2(x)))
+        x = torch.flatten(x, 1)        
+        x = F.leaky_relu(self.fc1(x))
         
         x = self.fc2(x)
         x = F.leaky_relu(x)
-        #x = F.relu(self.fc2(x))
 
         x = self.fc3(x)
         return x
-
-#*************************************************************************************
-
-
-"""
-#provides a label, or Class, to the object in question
-#not used here
-def output_label(label) :
-    output_mapping = {
-        0: "T-shirt/Top",
-        1: "Trouser",
-        2: "Pullover",
-        3: "Dress",
-        4: "Coat",
-        5: "Sandal",
-        6: "Shirt",
-        7: "Sneaker",
-        8: "Bag",
-        9: "Ankle Boot" }
-    
-    input = (label.item() if type(label) == torch.Tensor else label)
-    return output_mapping[input]
-"""

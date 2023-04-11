@@ -1,2 +1,0 @@
-filename = "trained_Model.pt"
-torch.save(model, filename) 

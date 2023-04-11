@@ -2,10 +2,10 @@ import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
 
-from model import MyModel
+from model import Fashion_Class_Model
 
 # Load the trained model
-model = MyModel()
+model = Fashion_Class_Model()
 model.load_state_dict(torch.load('fashion_mnist_cnn.ckpt'))
 
 # Convert the model to a traced form

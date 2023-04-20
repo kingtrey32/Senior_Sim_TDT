@@ -12,7 +12,15 @@ from model import Fashion_Class_Model
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-test_set = torchvision.datasets.FashionMNIST("./data", download=True, train=False, transform=transforms.Compose([transforms.ToTensor()]))
+
+
+transform = transforms.Compose([transforms.ToTensor(), transforms.Lambda(lambda x: x.repeat(3,1,1))])
+#transform = transforms.Compose([transforms.ToTensor()]) #original transform value
+
+test_set = torchvision.datasets.FashionMNIST("./data", download=True, train=False, transform=transform)
+
+
+
 batchSize = 100
 test_loader = torch.utils.data.DataLoader(test_set, batch_size=batchSize)
 
@@ -41,7 +49,7 @@ def model_test(num_iterations, loss):
             images, labels = images.to(device), labels.to(device)
             labels_list.append(labels)
             
-            test = Variable(images.view(100, 1, 28, 28))
+            test = Variable(images.view(100, 3, 28, 28))
             
             outputs = model(test)
             

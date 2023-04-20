@@ -28,7 +28,13 @@ from testing import return_iterationList
 #**************Initial variables for model instantiation and training*************
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-train_set = torchvision.datasets.FashionMNIST("./data", download=True, train=True, transform=transforms.Compose([transforms.ToTensor()]))
+
+transform = transforms.Compose([transforms.ToTensor(), transforms.Lambda(lambda x: x.repeat(3,1,1))])
+#transform = transforms.Compose([transforms.ToTensor()]) #original transform value
+
+train_set = torchvision.datasets.FashionMNIST("./data", download=True, train=True, transform=transform)
+
+
 batchSize = 100
 train_loader = torch.utils.data.DataLoader(train_set, batch_size=batchSize)
 image, label = next(iter(train_set))
@@ -47,7 +53,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=momen
 
 #***********************Training a network***************************
 
-num_epochs_to_train = 10 #each epoch adds about 600 iterations it seems
+num_epochs_to_train = 3 #each epoch adds about 600 iterations it seems
 num_iterations = 0 #counter for metrics at the end of training
 
 #lists for visualization of loss and accuracy
@@ -65,7 +71,7 @@ for epoch in range(num_epochs_to_train) :
     
     for images, labels in train_loader:
         images, labels = images.to(device), labels.to(device)
-        train = Variable(images.view(100, 1, 28, 28))
+        train = Variable(images.view(100, 3, 28, 28))
         labels = Variable(labels)
         
         #forward pass
@@ -91,8 +97,14 @@ for epoch in range(num_epochs_to_train) :
 
 
 #*************saves the final version here for export to Android*********
+
 #uses a different filename for diffrentation between training *.pt and finished *.pt
 torch.save(model.state_dict(), 'C:/Users/Ender/.spyder-py3/trained_cnn.pt')
+
+model.eval()
+model_scripted = torch.jit.script(model)
+model_scripted.save('model_scripted_3_Channel.pt')
+#model_scripted.save('model_scripted.pt')
 
 
 #*************metrics list population section

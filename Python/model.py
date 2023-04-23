@@ -1,6 +1,5 @@
 #model provided by professor A. Choudhury
-#modified by D. Joyner, T. Rana, T. Daniels
-
+#Spring 2023 CS 4900
 
 import torch
 import torch.nn as nn

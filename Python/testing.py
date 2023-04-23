@@ -1,29 +1,20 @@
 #Authors: D. Joyner, T. Rana, T. Daniels
 
-
 import torch
 from torch.autograd import Variable
-
 import torchvision
 import torchvision.transforms as transforms
-
 from model import Fashion_Class_Model
 
-
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-
 
 transform = transforms.Compose([transforms.ToTensor(), transforms.Lambda(lambda x: x.repeat(3,1,1))])
 #transform = transforms.Compose([transforms.ToTensor()]) #original transform value
 
 test_set = torchvision.datasets.FashionMNIST("./data", download=True, train=False, transform=transform)
 
-
-
 batchSize = 100
 test_loader = torch.utils.data.DataLoader(test_set, batch_size=batchSize)
-
 
 #*************************variables for metrics production******************
 labels_list = []

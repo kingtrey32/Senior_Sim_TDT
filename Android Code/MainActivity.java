@@ -1,4 +1,4 @@
-package com.example.final_project;
+package com.example.finalproject;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -8,8 +8,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -32,30 +30,26 @@ import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
+    //*****variables for user images and deployed model
     private Bitmap bitmap = null;
-    private Module module = null;
+    private Module model = null;
 
+    //Classes of items
     String [] items = {"T-shirt/top", "Trouser","Pullover", "Dress",
             "Coat", "Sandal", "Shirt", "Sneaker", "Bag", "Ankle boot"};
 
-
-    //loadButton
+    //*****UI Elements*****
     Button loadButton;
-    //classifyButton
     Button classifyButton;
-    //textView
     TextView textView;
-    //imageView
     ImageView imageView;
 
-
-
+    //*****Helper method for model deployment*****
     public static String assetFilePath(Context context, String assetName) throws IOException {
         File file = new File(context.getFilesDir(), assetName);
         if (file.exists() && file.length() > 0) {
             return file.getAbsolutePath();
         }
-
         try (InputStream is = context.getAssets().open(assetName)) {
             try (OutputStream os = new FileOutputStream(file)) {
                 byte[] buffer = new byte[4 * 1024];
@@ -74,25 +68,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //loadButton
+        //*****UI Elements established
         loadButton = findViewById(R.id.loadButton);
-        //classifyButton
         classifyButton = findViewById(R.id.classifyButton);
-        //textView
         textView = findViewById(R.id.textView);
-        //imageView
         imageView = findViewById(R.id.imageView);
 
-
         try {
-            module = Module.load(assetFilePath(this, "model_scripted_3_Channel.pt"));
+            model = Module.load(assetFilePath(this, "model_scripted_3_Channel.pt"));
         } catch (IOException e) {
             Log.e("PTMobileWalkthru", "Error reading assets", e);
             finish();
         }
 
-        //get user image
-        //    loads into imageView
+        //get user image, loads into imageView
         loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,27 +93,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-        //classify button goes here
-
+        //defines activity for Classify Button
         classifyButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 float[] model_STD = {1.0f, 1.0f, 1.0f};
                 float[] model_MEAN = {0.0f, 0.0f, 0.0f};
 
                 final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap, model_MEAN,  model_STD);
-                //final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap, TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB);
 
-                // running the model
-                //error says that somewhere in this chained call, a string is present when it should be a tuple
-                final Tensor outputTensor = module.forward(IValue.from(inputTensor)).toTensor();
+                //model inference
+                final Tensor outputTensor = model.forward(IValue.from(inputTensor)).toTensor();
 
-                // getting tensor content as java array of floats
+                // getting tensor content as array of floats
                 final float[] scores = outputTensor.getDataAsFloatArray();
 
-                // searching for the index with maximum score
+                //iterate through the predicted classes, finds the highest score
                 float maxScore = -Float.MAX_VALUE;
                 int maxScoreIdx = -1;
                 for (int i = 0; i < scores.length; i++) {
@@ -133,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
                         maxScoreIdx = i;
                     }
                 }
-
-
                 String className = items[maxScoreIdx];
 
                 // showing className on UI

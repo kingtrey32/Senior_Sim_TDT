@@ -1,4 +1,5 @@
-package com.example.myapplication;
+package com.example.finalproject;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,10 +8,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,65 +20,111 @@ import android.widget.TextView;
 import org.pytorch.IValue;
 import org.pytorch.Module;
 import org.pytorch.Tensor;
+import org.pytorch.torchvision.TensorImageUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
-    int SELECT_PICTURE=200;
+    //*****variables for user images and deployed model
+    private Bitmap bitmap = null;
+    private Module model = null;
 
-    ImageView imageView;
-    TextView textView;
-    Button loadbutton;
-    Button classifybutton;
-
+    //Classes of items
     String [] items = {"T-shirt/top", "Trouser","Pullover", "Dress",
             "Coat", "Sandal", "Shirt", "Sneaker", "Bag", "Ankle boot"};
 
-    Module module;
+    //*****UI Elements*****
+    Button loadButton;
+    Button classifyButton;
+    TextView textView;
+    ImageView imageView;
+
+    //*****Helper method for model deployment*****
+    public static String assetFilePath(Context context, String assetName) throws IOException {
+        File file = new File(context.getFilesDir(), assetName);
+        if (file.exists() && file.length() > 0) {
+            return file.getAbsolutePath();
+        }
+        try (InputStream is = context.getAssets().open(assetName)) {
+            try (OutputStream os = new FileOutputStream(file)) {
+                byte[] buffer = new byte[4 * 1024];
+                int read;
+                while ((read = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, read);
+                }
+                os.flush();
+            }
+            return file.getAbsolutePath();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //*****UI Elements established
+        loadButton = findViewById(R.id.loadButton);
+        classifyButton = findViewById(R.id.classifyButton);
+        textView = findViewById(R.id.textView);
+        imageView = findViewById(R.id.imageView);
+
         try {
-            module = Module.load(assetFilePath(MainActivity.this));
+            model = Module.load(assetFilePath(this, "model_scripted_3_Channel.pt"));
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("PTMobileWalkthru", "Error reading assets", e);
+            finish();
         }
 
-        imageView = findViewById(R.id.imageView);
-        textView = findViewById(R.id.textView);
-        loadbutton = findViewById(R.id.loadbutton);
-        classifybutton = findViewById(R.id.classifybutton);
-
-        loadbutton.setOnClickListener(new View.OnClickListener() {
+        //get user image, loads into imageView
+        loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                imageChooser();
+                Intent i = new Intent();
+                i.setType("image/*");
+                i.setAction(Intent.ACTION_GET_CONTENT);
+
+                launchSomeActivity.launch(i);
             }
         });
 
-        classifybutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                classifyImage(((BitmapDrawable) imageView.getDrawable()).getBitmap());
+        //defines activity for Classify Button
+        classifyButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                float[] model_STD = {1.0f, 1.0f, 1.0f};
+                float[] model_MEAN = {0.0f, 0.0f, 0.0f};
+
+                final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap, model_MEAN,  model_STD);
+
+                //model inference
+                final Tensor outputTensor = model.forward(IValue.from(inputTensor)).toTensor();
+
+                // getting tensor content as array of floats
+                final float[] scores = outputTensor.getDataAsFloatArray();
+
+                //iterate through the predicted classes, finds the highest score
+                float maxScore = -Float.MAX_VALUE;
+                int maxScoreIdx = -1;
+                for (int i = 0; i < scores.length; i++) {
+                    if (scores[i] > maxScore) {
+                        maxScore = scores[i];
+                        maxScoreIdx = i;
+                    }
+                }
+                String className = items[maxScoreIdx];
+
+                // showing className on UI
+                textView.setText(className);
             }
         });
     }
 
-    private void imageChooser() {
-        Intent i = new Intent();
-        i.setType("image/*");
-        i.setAction(Intent.ACTION_GET_CONTENT);
-
-        launchSomeActivity.launch(i);
-    }
-
+    //loadButton activity result, gets image
     ActivityResultLauncher<Intent> launchSomeActivity = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -85,12 +132,9 @@ public class MainActivity extends AppCompatActivity {
                     Intent data = result.getData();
                     if (data != null) {
                         Uri selectedImageUri = data.getData();
-                        Bitmap selectedImageBitmap;
                         try {
-                            selectedImageBitmap = MediaStore.Images.Media.getBitmap(
-                                    this.getContentResolver(),
-                                    selectedImageUri);
-                            imageView.setImageBitmap(selectedImageBitmap);
+                            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                            imageView.setImageBitmap(bitmap);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -98,67 +142,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-    private void classifyImage(Bitmap bitmap) {
-        // Preprocess the image
-        Tensor inputTensor = preprocessImage(bitmap);
 
-        // Pass the input tensor to the model to get the output
-        Tensor outputTensor = module.forward(IValue.from(inputTensor)).toTensor();
-
-        // Get the predicted class index
-        float[] scores = outputTensor.getDataAsFloatArray();
-        float maxScore = -Float.MAX_VALUE;
-        for (int i = 0; i < scores.length; i++) {
-            if (scores[i] > maxScore) {
-                maxScore = scores[i];
-            }
-        }
-
-        // Return the predicted class label
-    }
-
-    private Tensor preprocessImage(Bitmap bitmap) {
-        // Resize the image to 28x28 pixels
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 28, 28, true);
-
-        // Convert the image to a float array
-        int[] pixels = new int[28 * 28];
-        resizedBitmap.getPixels(pixels, 0, 28, 0, 0, 28, 28);
-        float[] floatValues = new float[28 * 28];
-        for (int i = 0; i < pixels.length; i++) {
-            final int val = pixels[i];
-            floatValues[i] = (float) (((val >> 16) & 0xFF) * 0.299 + ((val >> 8) & 0xFF) * 0.587 + (val & 0xFF) * 0.114);
-        }
-
-
-
-        // Normalize the pixel values
-            float[] mean = {0.5f};
-            float[] std = {0.5f};
-            for (int i = 0; i < floatValues.length; i++) {
-                floatValues[i] = (floatValues[i] / 255.0f - mean[0]) / std[0];
-            }
-
-            // Create a PyTorch Tensor from the float array
-            long[] shape = {1, 1, 28, 28};
-            return Tensor.fromBlob(floatValues, shape);
-        }
-    private String assetFilePath(Context context) throws IOException {
-        File file = new File(context.getFilesDir(), "fashion_mnist_cnn_traced.pt");
-        if (!file.exists()) {
-            try (InputStream is = context.getAssets().open("fashion_mnist_cnn_traced.pt")) {
-                try (FileOutputStream os = new FileOutputStream(file)) {
-                    byte[] buffer = new byte[4 * 1024];
-                    int read;
-                    while ((read = ((InputStream) is).read(buffer)) != -1) {
-                        os.write(buffer, 0, read);
-                    }
-                    os.flush();
-                }
-            }
-        }
-        return file.getPath();
-    }
-    }
-
-
+}

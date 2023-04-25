@@ -21,13 +21,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/loadButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Button
-        android:id="@+id/loadbutton"
+        android:id="@+id/loadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Load Image"
@@ -37,7 +37,7 @@
         app:layout_constraintTop_toTopOf="parent"  />
 
     <Button
-        android:id="@+id/classifybutton"
+        android:id="@+id/classifyButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Classify"

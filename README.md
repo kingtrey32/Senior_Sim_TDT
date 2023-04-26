@@ -21,11 +21,14 @@ Requirements:
 
 Execution Instructions:
 
-1.	Install all the above programs and tools to your local machine ( make a new folder and make sure there all located in 		that folder for file pathing reasons)
-2.	Open the conda Powershell prompt and use one of the above commands based on your pc’s hardware
-3.	Our program does not have the capability of putting the trained model on the virtual phone ( this feature wil be updated 	 later)
-4.	Open up spyder notice it creates a temp file do not exit that file 
-5.	Make a copy of the repository on github and extract in the same folder where all the programs are stored
-6.	Find the model_creator file and copy and paste it into your temp file
-7.	Open a new file and copy and past the model code into it and run it so it saves to the program
-8.	Once copied run the program( notice we did not mention anything about the FashionMnist data set that’s because our 		program downloads it from the internet and store it in the prper location for you)
+1: After installing the above requiremnents Go ahead to the main branch and dowload the entire Android Code/Senior_sim_TDT folder
+2: Extract the Senior_Sim_TDT-main 
+3: in file exploerer click Senior_Sim_TDT-main > Android code > you should see click Senior_Sim_TDT-main
+4: open android studio navigate to File > Open > AndroidStudioProject > and from there drag and drop the click AndroidStudioProject in to the AndroidStudioProject folder
+5: Create a virtual device (pixel 5 : Tiramisu) and Generate the Phone
+6: With the images provided by the instructor drag and drop the images directly to the Emulated device 
+7: on the device open the Files folder, the image is in the download folder
+8: hold the image and select ⋮ > Move to > ≡ > SDK_gphone64_x86_64 > Pictures > Move
+9: launch the app Happy Classyfing 
+
+ 

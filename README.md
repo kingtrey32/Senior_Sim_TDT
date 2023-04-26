@@ -21,7 +21,8 @@ Requirements:
 
 Execution Instructions:
 
-1.After installing the above requiremnents Go ahead to the main branch and dowload the entire Android Code/Senior_sim_TDT folder
+1. After installing the above requiremnents Go ahead to the main branch and dowload the entire Android Code/Senior_sim_TDT folder
+
 2.Extract the Senior_Sim_TDT-main 
 3.in file exploerer click Senior_Sim_TDT-main > Android code > you should see click Senior_Sim_TDT-main
 4. open android studio navigate to File > Open > AndroidStudioProject > and from there drag and drop the click AndroidStudioProject in to the AndroidStudioProject folder

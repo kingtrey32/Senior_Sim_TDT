@@ -28,7 +28,7 @@ Execution Instructions:
 •	 With the images provided by the instructor drag and drop the images directly to the Emulated device 
 •	 on the device open the Files folder, the image is in the download folder
 •	 hold the image and select ⋮ > Move to > ≡ > SDK_gphone64_x86_64 > Pictures > Move
-•	 launch the app Happy Classyfing
+1.	 launch the app Happy Classyfing
 
 
  

@@ -5,7 +5,9 @@ Senior capstone project for Spring 2023 CS4900
 The project performs the following steps:
 	
 1.Generates and android app that will be uploaded to a virtual machine that can identify clothing
+
 2.Using the FashionMnist data set as its Data set 
+
 3.Allowing the user to select a 28x28 pixel photo from the virtual phones gallery 
 
 Requirements:

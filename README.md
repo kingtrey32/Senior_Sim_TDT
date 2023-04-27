@@ -9,7 +9,7 @@ The project performs the following steps:
 2.Using the FashionMnist data set as its Data set 
 
 3.Allowing the user to select a 28x28 pixel photo from the virtual phones gallery 
-
+***********************************************************************************************************************************************************************
 Requirements:
 
 •Android Studio: https://developer.android.com/studio
@@ -27,7 +27,7 @@ Requirements:
 •FashionMnist Dataset: https://www.kaggle.com/datasets/zalando-research/fashionmnist
 
 •Dr.Ahana Roy’s Model to do the identifying ( supplied In the GIthub)
-
+***********************************************************************************************************************************************************************
 Execution Instructions:
 
 1.After installing the above requiremnents Go ahead to the main branch and dowload the entire Android Code/Senior_sim_TDT folder
@@ -36,7 +36,7 @@ Execution Instructions:
 
 3.in file exploerer click Senior_Sim_TDT-main > Android code > you should see click Senior_Sim_TDT-main
 
-4. open android studio navigate to File > Open > AndroidStudioProject > and from there drag and drop the click Senior_Sim_TDT-main in to the AndroidStudioProject folder
+4.open android studio navigate to File > Open > AndroidStudioProject > and from there drag and drop the click Senior_Sim_TDT-main in to the AndroidStudioProject folder
 
 6.Create a virtual device (pixel 5 : Tiramisu) and Generate the Phone
 

@@ -44,7 +44,7 @@ Execution Instructions:
 
 8.on the device open the Files folder, the image is in the download folder
 
-9.hold the image and select ⋮ > Move to > ≡ > SDK_gphone64_x86_64 > Pictures > Move > launch the app Happy Classyfing
+9.hold the image and select ⋮ > Move to > ≡ > SDK_gphone64_x86_64 > Pictures > Move > launch the app Happy Classyfing :grin:
 
 
  
